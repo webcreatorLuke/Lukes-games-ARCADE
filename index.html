@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luke's Games 🎮</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #0a0e27;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(255, 0, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Glowing title */
+        h1 {
+            font-family: 'Bungee', cursive;
+            font-size: clamp(3rem, 12vw, 7rem);
+            color: #fff;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 30px #ff00ff,
+                0 0 40px #ff00ff,
+                0 0 70px #ff00ff,
+                0 0 80px #ff00ff,
+                0 0 100px #ff00ff;
+            animation: neonPulse 1.5s ease-in-out infinite alternate,
+                       glitch 5s infinite;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+            position: relative;
+        }
+
+        @keyframes neonPulse {
+            from {
+                text-shadow: 
+                    0 0 10px #ff00ff,
+                    0 0 20px #ff00ff,
+                    0 0 30px #ff00ff,
+                    0 0 40px #ff00ff,
+                    0 0 70px #ff00ff,
+                    0 0 80px #ff00ff,
+                    0 0 100px #ff00ff;
+            }
+            to {
+                text-shadow: 
+                    0 0 5px #ff00ff,
+                    0 0 10px #ff00ff,
+                    0 0 15px #ff00ff,
+                    0 0 20px #ff00ff,
+                    0 0 35px #ff00ff,
+                    0 0 40px #ff00ff,
+                    0 0 50px #ff00ff;
+            }
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                transform: translate(0, 0);
+            }
+            92% {
+                transform: translate(-2px, 2px);
+            }
+            94% {
+                transform: translate(2px, -2px);
+            }
+            96% {
+                transform: translate(-2px, -2px);
+            }
+        }
+
+        .subtitle {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: #00ffff;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff;
+            margin-bottom: 3rem;
+            animation: flicker 3s infinite;
+            letter-spacing: 0.2em;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            41%, 43% { opacity: 0.8; }
+            45%, 47% { opacity: 1; }
+            49%, 51% { opacity: 0.9; }
+        }
+
+        /* Game cards container */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            padding: 1rem;
+        }
+
+        /* Game card */
+        .game-card {
+            background: linear-gradient(135deg, #1a1a3e 0%, #0a0e27 100%);
+            border: 3px solid #ff00ff;
+            border-radius: 20px;
+            padding: 2rem;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.3),
+                inset 0 0 20px rgba(255, 0, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 0, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #00ffff;
+            box-shadow: 
+                0 10px 40px rgba(255, 0, 255, 0.6),
+                0 0 30px rgba(0, 255, 255, 0.4),
+                inset 0 0 30px rgba(255, 0, 255, 0.2);
+            animation: cardPulse 0.5s ease;
+        }
+
+        @keyframes cardPulse {
+            0%, 100% { transform: translateY(-10px) scale(1.05); }
+            50% { transform: translateY(-10px) scale(1.08); }
+        }
+
+        .game-card:active {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.6));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .game-title {
+            font-family: 'Bungee', cursive;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                2px 2px 0 #00ffff;
+            letter-spacing: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-description {
+            font-size: 1.3rem;
+            color: #00ffff;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+
+        .play-button {
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: 2px solid #fff;
+            border-radius: 50px;
+            color: #000;
+            font-family: 'Bungee', cursive;
+            font-size: 1.2rem;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+            animation: buttonGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% {
+                box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 5px 25px rgba(255, 0, 255, 0.8);
+            }
+        }
+
+        .game-card:hover .play-button {
+            animation: buttonPulse 0.5s ease infinite;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Decorative elements */
+        .star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: clamp(2rem, 10vw, 4rem);
+            }
+
+            .subtitle {
+                font-size: clamp(1rem, 3vw, 1.5rem);
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .game-card {
+                padding: 1.5rem;
+            }
+
+            .game-icon {
+                font-size: 3rem;
+            }
+
+            .game-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Coming soon badge */
+        .coming-soon {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .coming-soon::after {
+            content: 'COMING SOON';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 1rem 2rem;
+            font-family: 'Bungee', cursive;
+            font-size: 1.5rem;
+            border: 3px solid white;
+            border-radius: 10px;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LUKE'S GAMES</h1>
+        <div class="subtitle">>>> ARCADE <<<</div>
+
+        <div class="games-grid">
+            <a href="https://webcreatorluke.github.io/site/" class="game-card">
+                <span class="game-icon">🎨</span>
+                <div class="game-title">SIMON SAYS</div>
+                <div class="game-description">
+                    Test your memory! Follow the pattern and beat your high score!
+                </div>
+                <div class="play-button">▶ PLAY NOW</div>
+            </a>
+
+            <!-- Placeholder cards for future games -->
+            <div class="game-card coming-soon">
+                <span class="game-icon">🎯</span>
+                <div class="game-title">GAME 2</div>
+                <div class="game-description">
+                    New challenges await! Stay tuned for more fun.
+                </div>
+                <div class="play-button">▶ PLAY NOW</div>
+            </div>
+
+            <div class="game-card coming-soon">
+                <span class="game-icon">🚀</span>
+                <div class="game-title">GAME 3</div>
+                <div class="game-description">
+                    Epic adventures coming soon to the arcade!
+                </div>
+                <div class="play-button">▶ PLAY NOW</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create random twinkling stars
+        function createStars() {
+            const numStars = 50;
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(star);
+            }
+        }
+
+        createStars();
+
+        // Add sound effect on hover (optional)
+        const gameCards = document.querySelectorAll('.game-card:not(.coming-soon)');
+        gameCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Simple beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'square';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            });
+        });
+    </script>
+</body>
+</html>
